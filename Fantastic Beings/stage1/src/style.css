@@ -1,17 +1,27 @@
+body {
+    margin: 0;
+}
+
+#board {
+    background: url("images/board-bg.png");
+    background-size: cover;
+    height: 100vh;
+}
+
+#status-bar {
+    height: 120px;
+    background: url("images/state-panel-bg.png");
+    background-size: cover;
+}
+
 #map {
     margin-left:auto;
     margin-right:auto;
     margin-top: 20px;
-    background-color: aliceblue;
 }
 
 .cell {
-    width: 40px;
-    height: 40px;
-    border: solid 1px black;
-}
-
-#state-panel {
-    height: 60px;
-    background-color: grey;
+    width: 6vh;
+    height: 6vh;
+    border: solid 1px mediumpurple;
 }

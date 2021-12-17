@@ -46,6 +46,21 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`You need to create a map with 100 cells, found ${cells} cells and ${tds} 'td' elements`)
         }),
+        /*this.node.execute(async () => {
+            let board = await this.page.findById('board');
+            let boardStyles = await board.getComputedStyles();
+            return boardStyles ?
+                correct() :
+                wrong(`You need to set background image for your board`)
+        }),
+
+        this.page.execute(() => {
+            let bodyRect = await document.body.getComputedStyles();
+
+            return bodyRect.top === 0 && bodyRect.left === 0 && bodyRect.right === 0 ?
+                correct() :
+                wrong(`You need to drop any margins or paddings for your game board`)
+        }),*/
     ]
 
 }
