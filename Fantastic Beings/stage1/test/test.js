@@ -34,7 +34,7 @@ class FantasticBeingsTest extends StageTest {
         this.page.execute(() => {
             let rows = this.map.rows.length;
 
-            return rows === 10 ?
+            return rows === 9 ?
                 correct() :
                 wrong(`You need to create a map with 10 rows, found ${rows}`)
         }),
@@ -42,7 +42,7 @@ class FantasticBeingsTest extends StageTest {
             let tds = document.getElementsByTagName('td').length;
             let cells = document.getElementsByClassName('cell').length;
 
-            return cells === 100 && tds === 100 ?
+            return cells === 90 && tds === 90 ?
                 correct() :
                 wrong(`You need to create a map with 100 cells, found ${cells} cells and ${tds} 'td' elements`)
         }),
