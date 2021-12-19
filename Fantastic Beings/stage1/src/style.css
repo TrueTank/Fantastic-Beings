@@ -18,10 +18,11 @@ body {
     margin-left:auto;
     margin-right:auto;
     margin-top: 3vh;
+    width: 60vh;
+    height: 60vh;
 }
 
 .cell {
-    width: 6vh;
-    height: 6vh;
-    border: solid 1px mediumpurple;
+    border: solid 1px rgb(103, 101, 168);
+    background-color: rgba(103, 101, 168, 0.4);
 }
