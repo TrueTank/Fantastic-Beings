@@ -7,6 +7,11 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
+        this.node.execute(async () => {
+            // this code will be executed in the Node.js context
+            const board = await this.page.findById('board')
+            return correct()
+        }),
         // Test#1 - check existence of board element
         this.page.execute(() => {
             this.board = document.getElementById('board');
