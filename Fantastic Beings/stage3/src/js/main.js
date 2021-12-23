@@ -31,10 +31,10 @@ let game = {
             }
         }
     },
-    renderBeings(beingList) {
+    renderBeings() {
         for (let cell in this.cells) {
             if(!this.cells[cell].dataset.being) {
-                let being = beingList[Math.floor(Math.random() * beingList.length)];
+                let being = this.beings[Math.floor(Math.random() * this.beings.length)];
                 this.addBeingToCell(being, cell);
             }
         }
@@ -49,7 +49,7 @@ let game = {
     },
     init() {
         this.renderMap(this.rowsCount, this.colsCount);
-        this.renderBeings(this.beings);
+        this.renderBeings();
     }
 };
 
