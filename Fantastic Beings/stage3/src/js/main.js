@@ -22,7 +22,6 @@ let game = {
             let tr = document.createElement('tr');
             tr.classList.add('row');
             table.appendChild(tr);
-
             for (let col = 0; col < colsCount; col++) {
                 let td = document.createElement('td');
                 td.classList.add('cell');
@@ -40,12 +39,15 @@ let game = {
         }
     },
     addBeingToCell(being, coords) {
-        let beingImg = document.createElement('img');
-        beingImg.dataset.coords = coords;
-        beingImg.classList.add('being');
-        beingImg.src = `images/${being}.png`;
-        this.cells[coords].appendChild(beingImg);
-        this.cells[coords].dataset.being = being;
+        if(this.cells[coords] && this.beings.includes(being)) {
+            let beingImg = document.createElement('img');
+            beingImg.dataset.coords = coords;
+            beingImg.src = `images/${being}.png`;
+            this.cells[coords].appendChild(beingImg);
+            this.cells[coords].dataset.being = being;
+        } else {
+            return "Error!";
+        }
     },
     init() {
         this.renderMap(this.rowsCount, this.colsCount);
