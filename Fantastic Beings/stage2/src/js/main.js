@@ -1,7 +1,7 @@
 "use strict";
 
-const rowsCount = 1;
-const colsCount = 1;
+const rowsCount = 5;
+const colsCount = 5;
 
 function renderMap(rowsCount, colsCount) {
     if(rowsCount !== colsCount) {

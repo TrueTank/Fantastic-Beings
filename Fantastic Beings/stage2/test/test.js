@@ -7,90 +7,43 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
-        // Test#1 - check that renderMap clean tag table before filling
+        //Test#1 - check count of tds
         this.node.execute(async () => {
-            await this.page.evaluate(async () => {
-                return this.renderMap(0,0);
-            });
-            const map = await this.page.findById('map');
-            let html = await map.innerHtml();
-
-            return html === '' ?
-                correct() :
-                wrong(`You need to remove all elements inside the table tag before rendering the map.`);
-        }),
-        // Test#2 - check renderMap(1, 1)
-        this.node.execute(async () => {
-            await this.page.evaluate(async () => {
-                return this.renderMap(1,1);
-            });
             const tds = await this.page.findAllBySelector('td');
 
-            return tds.length === 1 ?
+            return tds.length === 25 ?
                 correct() :
-                wrong(`The renderMap function should work correctly with different values.`);
+                wrong(`The map must be 5x5.`);
         }),
-        //Test#3 - check renderMap(100, 100)
+        //Test#2 - check that map set class cell to the cells
         this.node.execute(async () => {
-            await this.page.evaluate(async () => {
-                return this.renderMap(100,100);
-            });
-            const tds = await this.page.findAllBySelector('td');
-
-            return tds.length === 10000 ?
-                correct() :
-                wrong(`The renderMap function should work correctly with different values.`);
-        }),
-        //Test#4 - check renderMap(5, 2)
-        this.node.execute(async () => {
-            let errorMessage = await this.page.evaluate(async () => {
-                return this.renderMap(5,2);
-            });
-
-            return errorMessage === 'Error!' ?
-                correct() :
-                wrong(`The renderMap function should return 'Error!' for incorrect parameters.`);
-        }),
-        //Test#5 - check that renderMap set class cell to the cells
-        this.node.execute(async () => {
-            await this.page.evaluate(async () => {
-                return this.renderMap(5,5);
-            });
             const cells = await this.page.findAllBySelector('.cell');
 
             return cells.length === 25 ?
                 correct() :
-                wrong(`The renderMap function should add class 'cell' to each cell.`);
+                wrong(`Each cell of the map must have a 'cell' class.`);
         }),
-        //Test#6 - check renderMap(-5, -5)
+        //Test#3 - check rows count
         this.node.execute(async () => {
-            let errorMessage = await this.page.evaluate(async () => {
-                return this.renderMap(-5,-5);
-            });
+            const cells = await this.page.findAllBySelector('tr');
 
-            return errorMessage === 'Error!' ?
+            return cells.length === 5 ?
                 correct() :
-                wrong(`The renderMap function should return 'Error!' for incorrect parameters.`);
+                wrong(`The map must have 5 rows in the table.`);
         }),
-        //Test#7 - check renderMap('five', 'five')
+        //Test#4 - check that map filled dynamically
         this.node.execute(async () => {
-            let errorMessage = await this.page.evaluate(async () => {
-                return this.renderMap('five', 'five');
+            let map = await this.page.findAllBySelector('#map');
+            map.innerHTML = '';
+            await this.page.evaluate(async () => {
+                window.onload = function () {}
             });
+            await this.page.refresh();
+            const cells = await this.page.findAllBySelector('tr');
 
-            return errorMessage === 'Error!' ?
-                correct() :
-                wrong(`The renderMap function should return 'Error!' for incorrect parameters.`);
-        }),
-        //Test#8 - check renderMap()
-        this.node.execute(async () => {
-            let errorMessage = await this.page.evaluate(async () => {
-                return this.renderMap();
-            });
-
-            return errorMessage === 'Error!' ?
-                correct() :
-                wrong(`The renderMap function should return 'Error!' for incorrect parameters.`);
+            return cells.length ?
+                wrong(`The map must have 5 rows in the table.`) :
+                correct()
         }),
     ]
 
