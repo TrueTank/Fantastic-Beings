@@ -14,6 +14,20 @@ body {
     background-size: cover;
 }
 
+#game-footer {
+    height: 7vw;
+    background: url(images/game-footer.png);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-size: inherit;
+    text-align: center;
+    color: white;
+    line-height: 7vw;
+    font-size: 3vw;
+    text-shadow: 1px 1px black;
+}
+
 #map {
     margin-left:auto;
     margin-right:auto;

@@ -79,7 +79,7 @@ class FantasticBeingsTest extends StageTest {
                     let currentBeing = '';
                     group = [];
                     for (let j = 0; j < 5; j++) {
-                        let being = map[i][j];
+                        let being = isRow ? map[j][i] : map[i][j];
                         if (currentBeing !== being) {
                             if (group.length < 2) {
                                 currentBeing = being;
@@ -109,7 +109,7 @@ class FantasticBeingsTest extends StageTest {
                         }
                     }
                 }
-                return false;
+                return [];
             }
 
             let cellsForSwap = [];
@@ -125,7 +125,7 @@ class FantasticBeingsTest extends StageTest {
                     }
                 }
                 cellsForSwap = getCellsForSwap();
-                if (!cellsForSwap) {
+                if (cellsForSwap.length === 0) {
                     cellsForSwap = getCellsForSwap(true);
                 }
             }

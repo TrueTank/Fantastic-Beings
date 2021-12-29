@@ -5,10 +5,10 @@ let settings = {
     colsCount: 5,
     beings: ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'],
     minLength: 3,
-    numberOfMoves: 15,
+    numberOfMoves: 1,
     beingsForWin: {
-        'zouwu': 10,
-        'kelpie': 10
+        'zouwu': 3,
+        'kelpie': 0
     },
     score: 0,
 };
@@ -17,6 +17,7 @@ let renderer = {
     cells: {},
     movesObj: null,
     scoreObj: null,
+    gameResultObj: null,
     renderMap(rowsCount, colsCount) {
         if (rowsCount !== colsCount) {
             return 'Error!';
@@ -156,6 +157,8 @@ let renderer = {
     initStatusBar() {
         this.movesObj = document.querySelector('#moves-value');
         this.scoreObj = document.querySelector('#score-value');
+        this.gameResultObj = document.querySelector('#game-footer');
+        this.gameResultObj.innerHTML = 'Swap animals to form a sequence of three in a row';
         let bfw = document.getElementById('beings-for-win');
         for(let b in settings.beingsForWin) {
             let spanObject = document.createElement('span');
@@ -204,15 +207,15 @@ let game = {
                             game.changeBeings(target, game.selectedBeing);
                         }
                         game.selectedBeing = '';
+                        settings.numberOfMoves--;
+                        renderer.updateStatusBar();
                         if (renderer.isWin()) {
-                            alert('Ура! Победа!');
+                            renderer.gameResultObj.innerHTML = 'You won! Reload the page to start the game again.';
                             this.gameOver = true;
                             return;
                         }
-                        settings.numberOfMoves--;
-                        renderer.updateStatusBar();
                         if(settings.numberOfMoves === 0) {
-                            alert('Вы проиграли:С Чтобы попробовать ещё раз, перезагрузите страницу.');
+                            renderer.gameResultObj.innerHTML = 'You lost! Reload the page to start the game again.';
                             this.gameOver = true;
                         }
                     }
@@ -222,8 +225,6 @@ let game = {
                     return true;
                 }
             }
-        } else {
-            alert('Игра окончена! Чтобы попробовать ещё раз, перезагрузите страницу.');
         }
     },
     //TODO Refactor!!!
