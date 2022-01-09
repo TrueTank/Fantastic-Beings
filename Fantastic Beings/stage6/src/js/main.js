@@ -1,11 +1,19 @@
 "use strict";
 
+function sleep(milliseconds) {
+    const date = Date.now();
+    let currentDate = null;
+    do {
+        currentDate = Date.now();
+    } while (currentDate - date < milliseconds);
+}
+
 let settings = {
     rowsCount: 5,
     colsCount: 5,
     beings: ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'],
     minLength: 3,
-    numberOfMoves: 15,
+    numberOfMoves: 10,
     beingsForWin: {
         'zouwu': 10,
         'kelpie': 10
@@ -13,10 +21,26 @@ let settings = {
     score: 0,
 };
 
+function sound(src) {
+    this.sound = document.createElement("audio");
+    this.sound.src = src;
+    this.sound.setAttribute("preload", "auto");
+    this.sound.setAttribute("controls", "none");
+    this.sound.style.display = "none";
+    document.body.appendChild(this.sound);
+    this.play = function(){
+        this.sound.play();
+    };
+    this.stop = function(){
+        this.sound.pause();
+    };
+}
+
 let renderer = {
     cells: {},
     movesObj: null,
     scoreObj: null,
+    gameResultObj: null,
     renderMap(rowsCount, colsCount) {
         if (rowsCount !== colsCount) {
             return 'Error!';
@@ -118,6 +142,7 @@ let renderer = {
         return deleteFlag;
     },
     deleteGroup(group) {
+        game.soundMatch.play();
         let b = group[0].dataset.being;
         if(settings.beingsForWin[b]) {
             settings.beingsForWin[b] -= group.length;
@@ -126,7 +151,11 @@ let renderer = {
         }
         settings.score += group.length * 10;
         for (let g of group) {
+            g.classList.add('clear');
             this.clearCell(g);
+            setTimeout(function () {
+                g.classList.remove('clear');
+            }, 600);
         }
     },
     shiftBeings() {
@@ -156,6 +185,8 @@ let renderer = {
     initStatusBar() {
         this.movesObj = document.querySelector('#moves-value');
         this.scoreObj = document.querySelector('#score-value');
+        this.gameResultObj = document.querySelector('#game-footer');
+        this.gameResultObj.innerHTML = 'Swap animals to form a sequence of three in a row';
         let bfw = document.getElementById('beings-for-win');
         for(let b in settings.beingsForWin) {
             let spanObject = document.createElement('span');
@@ -178,11 +209,15 @@ let game = {
     renderer,
     selectedBeing: '',
     gameOver: false,
+    soundClick: null,
+    soundMatch: null,
     init() {
         this.renderer.renderMap(this.settings.rowsCount, this.settings.colsCount);
         this.renderer.renderBeings();
         this.renderer.initStatusBar();
         window.onclick = this.mouseClickHandler;
+        this.soundClick = new sound("sounds/click.wav");
+        this.soundMatch = new sound("sounds/match.wav");
     },
     //TODO Refactor!!!
     mouseClickHandler(e) {
@@ -191,6 +226,7 @@ let game = {
             if (target.dataset.coords) {
                 if (game.selectedBeing) {
                     if (game.isAdjacentCell(game.selectedBeing.dataset.coords, target.dataset.coords)) {
+                        game.soundClick.play();
                         game.changeBeings(target, game.selectedBeing);
                         game.renderer.resetCell(game.selectedBeing.dataset.coords);
                         if (renderer.checkMatchesInMap()) {
@@ -204,26 +240,25 @@ let game = {
                             game.changeBeings(target, game.selectedBeing);
                         }
                         game.selectedBeing = '';
+                        settings.numberOfMoves--;
+                        renderer.updateStatusBar();
                         if (renderer.isWin()) {
-                            alert('Ура! Победа!');
+                            renderer.gameResultObj.innerHTML = 'You won! Reload the page to start the game again.';
                             this.gameOver = true;
                             return;
                         }
-                        settings.numberOfMoves--;
-                        renderer.updateStatusBar();
                         if(settings.numberOfMoves === 0) {
-                            alert('Вы проиграли:С Чтобы попробовать ещё раз, перезагрузите страницу.');
+                            renderer.gameResultObj.innerHTML = 'You lost! Reload the page to start the game again.';
                             this.gameOver = true;
                         }
                     }
                 } else {
+                    game.soundClick.play();
                     game.selectedBeing = target;
                     game.renderer.setSelectedCell(game.selectedBeing.dataset.coords);
                     return true;
                 }
             }
-        } else {
-            alert('Игра окончена! Чтобы попробовать ещё раз, перезагрузите страницу.');
         }
     },
     //TODO Refactor!!!
