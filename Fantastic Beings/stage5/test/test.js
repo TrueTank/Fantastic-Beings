@@ -87,7 +87,6 @@ class FantasticBeingsTest extends StageTest {
             return content === 'Swap animals to form a sequence of three in a row' ?
                 correct() :
                 wrong(`The game-footer element should contain a line with game instruction (your line: ${content}.`);
-
         }),
         //Test#1 - проверяем победу
         this.node.execute(async () => {
@@ -114,8 +113,6 @@ class FantasticBeingsTest extends StageTest {
                     cellsForSwap = getCellsForSwap(true, 'zouwu', 2, map);
                 }
             }
-            console.log(group[0].x + ' ' + group[0].y)
-            console.log(group[1].x + ' ' + group[1].y)
             let being1 = await this.page.findBySelector(`img[data-coords=x${cellsForSwap[0].y}_y${cellsForSwap[0].x}]`);
             let being2 = await this.page.findBySelector(`img[data-coords=x${cellsForSwap[1].y}_y${cellsForSwap[1].x}]`);
 
