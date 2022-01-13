@@ -15,7 +15,51 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
-        //Test#1 - check background of selected being
+        //Test#1 - check existence of map element
+        this.page.execute(() => {
+            this.map = document.getElementById('map');
+
+            return this.map ?
+                correct() :
+                wrong(`You need to create a table with the ID "map"`)
+        }),
+        //Test#2 - check that map set class cell to the cells
+        this.node.execute(async () => {
+            const cells = await this.page.findAllBySelector('.cell');
+
+            return cells.length === 25 ?
+                correct() :
+                wrong(`Each cell of the map must have a 'cell' class.`);
+        }),
+        //Test#3 - check renderBeings function work
+        this.node.execute(async () => {
+            this.imgs = await this.page.findAllBySelector('img[data-coords]');
+            this.cells = await this.page.findAllBySelector('.cell[data-being]');
+
+            return this.imgs.length === 25 && this.cells.length === 25  ?
+                correct() :
+                wrong(`Beings rendering method must fill all empty cells of the map.`);
+        }),
+        //Test#4 - check .cell[data-being] property
+        this.page.execute(() => {
+            let beings = ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'];
+            let cellObjects = document.getElementsByClassName('cell');
+            for(let c of cellObjects) {
+                if(!beings.includes(c.dataset.being)) {
+                    return wrong(`Each cell must have a dataset.being property, the value of which must be equal to the name of a random creature from a list of 5 possible creatures.
+                    We see that the property of one of the cells is equal to the value: ${c.dataset.being}`);
+                }
+            }
+            return correct();
+        }),
+        //Test#5 - check img[data-coords] property
+        this.page.execute(() => {
+            let imgObjs = document.querySelectorAll('img[data-coords]');
+            return imgObjs[5].dataset.coords === 'x0_y1' ?
+                correct() :
+                wrong(`Img objects inside the table have an invalid dataset.coords property.`)
+        }),
+        //Test#6 - check background of selected being
         this.node.execute(async () => {
             const being = await this.page.findBySelector('img[data-coords=x0_y0]');
             await being.click();
@@ -27,7 +71,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`The clicked cell must have a background image.`);
         }),
-        //Test#2 - клик на несоседние клетки
+        //Test#7 - клик на несоседние клетки
         this.node.execute(async () => {
             await this.page.refresh();
             sleep(500);
@@ -45,7 +89,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`When you click on one cell and the second click on another, non-adjacent cell, nothing should happen.`);
         }),
-        //Test#3 - ищем возможную замену, кликаем на найденные элементы, проверяем, что элементы заменились другими
+        //Test#8 - ищем возможную замену, кликаем на найденные элементы, проверяем, что элементы заменились другими
         this.node.execute(async () => {
             let group = [];
             let map = [];
@@ -93,6 +137,7 @@ class FantasticBeingsTest extends StageTest {
                                 if(res) {
                                     return res;
                                 }
+                                group = [];
                             }
                         } else {
                             if (being) {
@@ -105,6 +150,7 @@ class FantasticBeingsTest extends StageTest {
                                 if(res) {
                                     return res;
                                 }
+                                group = [];
                             }
                         }
                     }

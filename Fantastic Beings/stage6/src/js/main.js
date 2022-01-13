@@ -13,10 +13,10 @@ let settings = {
     colsCount: 5,
     beings: ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'],
     minLength: 3,
-    numberOfMoves: 10,
+    numberOfMoves: 1,
     beingsForWin: {
-        'zouwu': 10,
-        'kelpie': 10
+        'zouwu': 3,
+        'kelpie': 0
     },
     score: 0,
 };

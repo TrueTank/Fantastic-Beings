@@ -7,7 +7,15 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
-        //Test#1 - check count of tds
+        // Test#1 - check existence of map element
+        this.page.execute(() => {
+            this.map = document.getElementById('map');
+
+            return this.map ?
+                correct() :
+                wrong(`You need to create a table with the ID "map"`)
+        }),
+        //Test#2 - check count of tds
         this.node.execute(async () => {
             const tds = await this.page.findAllBySelector('td');
 
@@ -15,7 +23,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`The map must be 5x5.`);
         }),
-        //Test#2 - check that map set class cell to the cells
+        //Test#3 - check that map set class cell to the cells
         this.node.execute(async () => {
             const cells = await this.page.findAllBySelector('.cell');
 
@@ -23,7 +31,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`Each cell of the map must have a 'cell' class.`);
         }),
-        //Test#3 - check rows count
+        //Test#4 - check rows count
         this.node.execute(async () => {
             const cells = await this.page.findAllBySelector('tr');
 
@@ -31,7 +39,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`The map must have 5 rows in the table.`);
         }),
-        //Test#4 - check that map filled dynamically
+        //Test#5 - check that map filled dynamically
         this.node.execute(async () => {
             let map = await this.page.findAllBySelector('#map');
             map.innerHTML = '';

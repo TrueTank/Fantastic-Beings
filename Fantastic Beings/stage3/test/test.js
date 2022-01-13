@@ -7,7 +7,23 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
-        //Test#1 - check renderBeings function work
+        //Test#1 - check existence of map element
+        this.page.execute(() => {
+            this.map = document.getElementById('map');
+
+            return this.map ?
+                correct() :
+                wrong(`You need to create a table with the ID "map"`)
+        }),
+        //Test#2 - check that map set class cell to the cells
+        this.node.execute(async () => {
+            const cells = await this.page.findAllBySelector('.cell');
+
+            return cells.length === 25 ?
+                correct() :
+                wrong(`Each cell of the map must have a 'cell' class.`);
+        }),
+        //Test#3 - check renderBeings function work
         this.node.execute(async () => {
             this.imgs = await this.page.findAllBySelector('img[data-coords]');
             this.cells = await this.page.findAllBySelector('.cell[data-being]');
@@ -16,7 +32,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`Beings rendering method must fill all empty cells of the map.`);
         }),
-        //Test#2 - check .cell[data-being] property
+        //Test#4 - check .cell[data-being] property
         this.page.execute(() => {
           let beings = ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'];
           let cellObjects = document.getElementsByClassName('cell');
@@ -28,7 +44,7 @@ class FantasticBeingsTest extends StageTest {
             }
             return correct();
         }),
-        //Test#3 - check img[data-coords] property
+        //Test#5 - check img[data-coords] property
         this.page.execute(() => {
             let imgObjs = document.querySelectorAll('img[data-coords]');
             return imgObjs[5].dataset.coords === 'x0_y1' ?
