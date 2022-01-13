@@ -1,3 +1,4 @@
+const puppeteer = require('puppeteer');
 const path = require('path');
 const pagePath = 'file://' + path.resolve(__dirname, '../src/index.html');
 const {StageTest, correct, wrong} = require('hs-test-web');
@@ -80,7 +81,7 @@ class FantasticBeingsTest extends StageTest {
     page = this.getPage(pagePath);
 
     tests = [
-        //Test#0 - проверяем тег audio в html
+        //Test#1 - проверяем тег audio в html
         this.node.execute(async () => {
             let being = await this.page.findBySelector('img[data-coords]');
             await being.click();
@@ -89,7 +90,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong('After clicking on the element, there should be an Audio object in the HTML.');
         }),
-        //Test#1 - проверяем !paused у audio после клика
+        //Test#2 - проверяем !paused у audio после клика
         this.node.execute(async () => {
             await this.page.refresh();
             sleep(700);
@@ -105,7 +106,7 @@ class FantasticBeingsTest extends StageTest {
             return paused === 'false' ? correct() :
                 wrong('After clicking on the creature, a sound should be played.');
         }),
-        //Test#2 - проверяем paused у audio после клика на несоседние элементы
+        //Test#3 - проверяем paused у audio после клика на несоседние элементы
         this.node.execute(async () => {
             sleep(700);
             let beings = await this.page.findAllBySelector('img[data-coords]');
@@ -120,7 +121,7 @@ class FantasticBeingsTest extends StageTest {
             return paused === 'true' ? correct() :
                 wrong('After clicking on non-adjacent creatures, the sound should not be played.');
         }),
-        //Test#3 - проверяем !paused у audio после исчезновения элементов
+        //Test#4 - проверяем !paused у audio после исчезновения элементов
         this.node.execute(async () => {
             await this.page.refresh();
             sleep(700);
@@ -163,23 +164,31 @@ class FantasticBeingsTest extends StageTest {
             return paused === 'false' ? correct() :
                 wrong('After the creatures disappear, the sound should play.');
         }),
-        //Test#4 - проверяем keyframes при уничтожении
-        this.node.execute(async () => {
-            await this.page.refresh();
-            sleep(700);
+        //Test#5 - проверяем keyframes при уничтожении (использован чистый puppeteer, так как без него не получилось пробросить переменную в evaluate)
+        async () => {
+            const browser = await puppeteer.launch({
+                headless: true,
+                defaultViewport: null,
+                args: ['--start-maximized', '--disable-infobar'],
+                ignoreDefaultArgs: ['--enable-automation'],
+            });
+
+            const page = await browser.newPage();
+            await page.coverage.startCSSCoverage();
+            await page.goto(pagePath);
 
             let map = [];
             let cellsForSwap = [];
             while(cellsForSwap.length === 0) {
-                await this.page.refresh();
+                await page.reload();
                 sleep(1000);
-                this.cells = await this.page.findAllBySelector('.cell');
+                this.cells = await page.$$('.cell');
                 map = [];
                 let str = '';
                 for (let i = 0; i < 5; i++) {
                     map[i] = [];
                     for (let j = 0; j < 5; j++) {
-                        map[i][j] = await this.cells[5 * i + j].getAttribute('data-being');
+                        map[i][j] = await page.evaluate(el => el.getAttribute("data-being"), this.cells[5 * i + j]);
                         str += map[i][j] + ' ';
                     }
                     str += '\n';
@@ -189,49 +198,30 @@ class FantasticBeingsTest extends StageTest {
                     cellsForSwap = getCellsForSwap(true, false, 2, map);
                 }
             }
-            let being2 = await this.page.findBySelector(`img[data-coords=x${cellsForSwap[1].y}_y${cellsForSwap[1].x}]`);
-            await being2.click();
-            sleep(300);
+            const v = cellsForSwap;
+            let animationEnd = await page.evaluate((cellsForSwap) => {
+                let animated = document.querySelector('#map');
+                let flag = false;
+                animated.onanimationend = function () {
+                    flag = true;
+                };
+                let being1 = document.querySelector(`img[data-coords=x${cellsForSwap[0].y}_y${cellsForSwap[0].x}]`);
+                let being2 = document.querySelector(`img[data-coords=x${cellsForSwap[1].y}_y${cellsForSwap[1].x}]`);
+                being2.click();
+                sleep(500);
+                being1.click();
+                sleep(500);
+                return new Promise((resolve, reject) => {
+                    setTimeout(resolve, 2000);
+                }).then(() => flag);
+            }, v);
+            console.log(animationEnd);
 
-            await this.page.evaluate(() => {
-                let animated = document.querySelector('.cell.selected');
-                animated.classList.add('test-animation');
-            });
-            let being1 = await this.page.findBySelector(`img[data-coords=x${cellsForSwap[0].y}_y${cellsForSwap[0].x}]`);
-            await being1.click();
-
-            let animationStart = await this.page.evaluate(() => {
-                return new Promise(function(resolve, reject) {
-                    let animated = document.querySelector('.test-animation');
-                    animated.onanimationend= resolve;
-                    setTimeout(() => reject, 5000);
-                });
-            });
-            console.log(animationStart);
-
-            return animationStart ?
+            await browser.close();
+            return animationEnd ?
                 correct() :
-                wrong('When the creature disappears, the animation should start.');
-        }),
-        //Test#5 - проверяем увеличение картинки существа при наведении
-        this.node.execute(async () => {
-            await this.page.refresh();
-            sleep(700);
-            let being = await this.page.findBySelector('img[data-coords]');
-            let beingComputedStyles = await being.getComputedStyles();
-            await being.click();
-            sleep(600);
-            let beingHoverComputedStyles = await being.getComputedStyles();
-
-            console.log(beingComputedStyles.height)
-            console.log(beingHoverComputedStyles.height)
-            console.log(beingComputedStyles.height*1.1)
-
-            return correct();
-            return beingComputedStyles.height*1.1 === beingHoverComputedStyles.height ?
-                correct() :
-                wrong('When you hover over a creature, it should grow in size by 10%.');
-        }),
+                wrong('When the creature disappears, the animation should start. Note that the animation must take place inside the map element.');
+        },
     ]
 
 }
