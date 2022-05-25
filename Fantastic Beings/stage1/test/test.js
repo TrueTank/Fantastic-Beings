@@ -89,7 +89,7 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`You need to position the game map in the center relative to the horizontal`)
         }),
-        // Test#10 - check height of status-bar
+        // Test#10 - check height of status-bar #test
         this.page.execute(() => {
             this.statusBarStyles = window.getComputedStyle(this.statusBar);
             this.statusBarHeight = this.statusBarStyles.height.replace('px', '');
