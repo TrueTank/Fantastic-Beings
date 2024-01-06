@@ -7,6 +7,62 @@ let settings = {
     minLength: 3
 };
 
+function renderMap(rowsCount, colsCount) {
+    if (rowsCount !== colsCount) {
+        return 'Error!';
+    }
+    if (rowsCount < 0 || colsCount < 0) {
+        return 'Error!';
+    }
+    if (isNaN(rowsCount) || isNaN(colsCount) < 0) {
+        return 'Error!';
+    }
+    let table = document.getElementById('map');
+    table.innerHTML = '';
+
+    for (let row = 0; row < rowsCount; row++) {
+        let tr = document.createElement('tr');
+        tr.classList.add('row');
+        table.appendChild(tr);
+        for (let col = 0; col < colsCount; col++) {
+            let td = document.createElement('td');
+            td.classList.add('cell');
+            tr.appendChild(td);
+            renderer.cells[`x${col}_y${row}`] = td;
+        }
+    }
+}
+
+function clearMap() {
+    let table = document.getElementById('map');
+    table.innerHTML = '';
+}
+
+window.redrawMap = function (map) {
+    let rows = map.length;
+    if(rows < 3) {
+        return false;
+    }
+    for(let r of map) {
+        if(r.length !== rows) {
+            return false;
+        }
+    }
+    renderMap(rows, rows);
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < rows; col++) {
+            if (!renderer.cells[`x${col}_y${row}`].dataset.being) {
+                if (settings.beings.includes(map[row][col])) {
+                    let being = map[row][col];
+                    renderer.addBeingToCell(being, `x${col}_y${row}`);
+                } else {
+                    return false;
+                }
+            }
+        }
+    }
+};
+
 let renderer = {
     cells: {},
     renderMap(rowsCount, colsCount) {
@@ -114,23 +170,6 @@ let renderer = {
             this.clearCell(g);
         }
     },
-    shiftBeings() {
-        for (let col = 0; col < settings.rowsCount; col++) {
-            let emptyIndex = -1;
-            for (let row = settings.colsCount - 1; row >= 0; row--) {
-                let cell = this.cells[`x${col}_y${row}`];
-                if (!cell.dataset.being && emptyIndex === -1) {
-                    emptyIndex = row;
-                } else {
-                    if (emptyIndex > -1 && cell.dataset.being) {
-                        this.addBeingToCell(cell.dataset.being, `x${col}_y${emptyIndex}`);
-                        this.clearCell(cell);
-                        emptyIndex--;
-                    }
-                }
-            }
-        }
-    }
 };
 
 let game = {
@@ -151,12 +190,10 @@ let game = {
                     game.changeBeings(target, game.selectedBeing);
                     game.renderer.resetCell(game.selectedBeing.dataset.coords);
                     if (renderer.checkMatchesInMap()) {
-                        renderer.shiftBeings();
-                        renderer.renderBeings();
+                        /*renderer.renderBeings();
                         while(renderer.checkMatchesInMap()) {
-                            renderer.shiftBeings();
                             renderer.renderBeings();
-                        }
+                        }*/
                     } else {
                         game.changeBeings(target, game.selectedBeing);
                     }

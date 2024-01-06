@@ -1,35 +1,40 @@
 "use strict";
 
+
+window.renderMap = function(rowsCount, colsCount) {
+    if (rowsCount !== colsCount) {
+        return 'Error!';
+    }
+    if (rowsCount < 0 || colsCount < 0) {
+        return 'Error!';
+    }
+    if (isNaN(rowsCount) || isNaN(colsCount) < 0) {
+        return 'Error!';
+    }
+    let table = document.getElementById('map');
+    table.innerHTML = '';
+
+    for (let row = 0; row < rowsCount; row++) {
+        let tr = document.createElement('tr');
+        tr.classList.add('row');
+        table.appendChild(tr);
+        for (let col = 0; col < colsCount; col++) {
+            let td = document.createElement('td');
+            td.classList.add('cell');
+            tr.appendChild(td);
+            game.cells[`x${col}_y${row}`] = td;
+        }
+    }
+}
+
+window.clearMap = function() {
+    let table = document.getElementById('map');
+    table.innerHTML = '';
+}
+
 let game = {
-    rowsCount: 5,
-    colsCount: 5,
     beings: ['zouwu', 'swooping', 'salamander', 'puffskein', 'kelpie'],
     cells: {},
-    renderMap(rowsCount, colsCount) {
-        if (rowsCount !== colsCount) {
-            return 'Error!';
-        }
-        if (rowsCount < 0 || colsCount < 0) {
-            return 'Error!';
-        }
-        if (isNaN(rowsCount) || isNaN(colsCount) < 0) {
-            return 'Error!';
-        }
-        let table = document.getElementById('map');
-        table.innerHTML = '';
-
-        for (let row = 0; row < rowsCount; row++) {
-            let tr = document.createElement('tr');
-            tr.classList.add('row');
-            table.appendChild(tr);
-            for (let col = 0; col < colsCount; col++) {
-                let td = document.createElement('td');
-                td.classList.add('cell');
-                tr.appendChild(td);
-                this.cells[`x${col}_y${row}`] = td;
-            }
-        }
-    },
     renderBeings() {
         for (let cell in this.cells) {
             if(!this.cells[cell].dataset.being) {
@@ -48,13 +53,35 @@ let game = {
         } else {
             return "Error!";
         }
-    },
-    init() {
-        this.renderMap(this.rowsCount, this.colsCount);
-        this.renderBeings();
+    }
+};
+
+window.redrawMap = function (map) {
+    let rows = map.length;
+    if(rows < 3) {
+        return false;
+    }
+    for(let r of map) {
+        if(r.length !== rows) {
+            return false;
+        }
+    }
+    window.renderMap(rows, rows);
+    for (let row = 0; row < rows; row++) {
+        for (let col = 0; col < rows; col++) {
+            if (!game.cells[`x${col}_y${row}`].dataset.being) {
+                if (game.beings.includes(map[row][col])) {
+                    let being = map[row][col];
+                    game.addBeingToCell(being, `x${col}_y${row}`);
+                } else {
+                    return false;
+                }
+            }
+        }
     }
 };
 
 window.onload = function () {
-    game.init();
+    renderMap(5, 5);
+    game.renderBeings();
 };

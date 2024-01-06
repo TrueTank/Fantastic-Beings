@@ -1,10 +1,10 @@
-const path = require('path');
-const pagePath = 'file://' + path.resolve(__dirname, '../src/index.html');
-const {StageTest, correct, wrong} = require('hs-test-web');
+import path from 'path';
+const pagePath = path.join(import.meta.url, '../../src/index.html');
+import {StageTest, correct, wrong} from 'hs-test-web';
 
-class FantasticBeingsTest extends StageTest {
+class Test extends StageTest {
 
-    page = this.getPage(pagePath);
+    page = this.getPage(pagePath)
 
     tests = [
         // Test#1 - check existence of board element
@@ -26,7 +26,7 @@ class FantasticBeingsTest extends StageTest {
 
             return wrong(`You need to create a table element for map in your board`)
         }),
-        // Test#3 - check existance of status-bar
+        // Test#3 - check existence of status-bar
         this.page.execute(() => {
             this.statusBar = document.getElementById('status-bar');
 
@@ -41,7 +41,7 @@ class FantasticBeingsTest extends StageTest {
 
             return this.boardStyles.height === this.bodyStyles.height ?
                 correct() :
-                wrong(`Board element must occupy the entire height of the visible area of ​​the screen`);
+                wrong(`Board element must occupy the entire height of the visible area of the screen`);
         }),
         // Test#5 - check existence of map element
         this.page.execute(() => {
@@ -68,7 +68,7 @@ class FantasticBeingsTest extends StageTest {
 
             return mapHeightPercents === 60 ?
                 correct() :
-                wrong(`The height of the map should be 60% of the height of the visible area of ​​the screen.` +
+                wrong(`The height of the map should be 60% of the height of the visible area of the screen.` +
                 `Now the height of the map is ${mapHeightPercents} percent of the height of the playing field`);
         }),
         // Test#8 - check form of map
@@ -77,7 +77,7 @@ class FantasticBeingsTest extends StageTest {
 
             return Math.abs(this.mapWidth - this.mapHeight) < 1 ?
                 correct() :
-                wrong(`The map must be square.`);
+                wrong(`The map must be square. Now width=${this.mapWidth}px and height=${this.mapHeight}px`);
         }),
         // Test#9 - check horizontal position of map
         this.page.execute(() => {
@@ -158,8 +158,7 @@ class FantasticBeingsTest extends StageTest {
 
 }
 
-jest.setTimeout(30000);
-test("Test stage", async () => {
-        await new FantasticBeingsTest().runTests()
+it("Test stage", async () => {
+        await new Test().runTests()
     }
-);
+).timeout(30000);

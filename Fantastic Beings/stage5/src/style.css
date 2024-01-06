@@ -14,20 +14,6 @@ body {
     background-size: cover;
 }
 
-#game-footer {
-    height: 7vw;
-    background: url(images/game-footer.png);
-    position: absolute;
-    bottom: 0;
-    width: 100%;
-    background-size: inherit;
-    text-align: center;
-    color: white;
-    line-height: 7vw;
-    font-size: 3vw;
-    text-shadow: 1px 1px black;
-}
-
 #map {
     margin-left:auto;
     margin-right:auto;
@@ -54,66 +40,4 @@ body {
 
 .cell:hover {
     background-image: url('images/cell-hover-bg.png');
-}
-
-body {
-    font-family: 'Marmelad', sans-serif;
-}
-
-#status-bar-container {
-    margin: auto;
-    width: 40vw;
-    height: 11vh;
-}
-
-#beings-for-win {
-    height: 11vh;
-    width: 16vw;
-    margin-left: 2vw;
-}
-
-#moves {
-    margin: auto;
-    width: 7vw;
-    text-align: center;
-    color: white;
-    font-size: 4vh;
-    padding-left: 1vw;
-    margin-top: -8vh;
-}
-
-#score {
-    margin-left: 27vw;
-    margin-top: -10vh;
-    color: white;
-    text-shadow: 1px 1px black;
-    font-size: 4.5vh;
-    font-weight: bold;
-}
-
-#moves-value {
-    display: block;
-}
-
-#beings-for-win span {
-    width: 4vw;
-    height: 4vw;
-    text-align: right;
-    display: inline-block;
-    background-repeat: no-repeat;
-    background-size: contain;
-    margin-right: 2vw;
-    margin-top: 2vh;
-    color: white;
-    text-shadow: 1px 1px black;
-    font-size: 3vh;
-    line-height: 12vh;
-}
-
-#beings-for-win .zouwu {
-    background-image: url('images/zouwu.png');
-}
-
-#beings-for-win .kelpie {
-    background-image: url('images/kelpie.png');
 }

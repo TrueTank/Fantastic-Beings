@@ -3,7 +3,7 @@
 const rowsCount = 5;
 const colsCount = 5;
 
-function renderMap(rowsCount, colsCount) {
+window.renderMap = function(rowsCount, colsCount) {
     if(rowsCount !== colsCount) {
         return 'Error!';
     }
@@ -29,6 +29,11 @@ function renderMap(rowsCount, colsCount) {
     }
 }
 
+window.clearMap = function() {
+    let table = document.getElementById('map');
+    table.innerHTML = '';
+}
+
 window.onload = function () {
-    renderMap(rowsCount, colsCount);
+    window.renderMap(rowsCount, colsCount);
 };

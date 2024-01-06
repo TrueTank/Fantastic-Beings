@@ -1,10 +1,10 @@
-const path = require('path');
-const pagePath = 'file://' + path.resolve(__dirname, '../src/index.html');
-const {StageTest, correct, wrong} = require('hs-test-web');
+import path from 'path';
+const pagePath = path.join(import.meta.url, '../../src/index.html');
+import {StageTest, correct, wrong} from 'hs-test-web';
 
-class FantasticBeingsTest extends StageTest {
+class Test extends StageTest {
 
-    page = this.getPage(pagePath);
+    page = this.getPage(pagePath)
 
     tests = [
         // Test#1 - check existence of map element
@@ -39,26 +39,36 @@ class FantasticBeingsTest extends StageTest {
                 correct() :
                 wrong(`The map must have 5 rows in the table.`);
         }),
-        //Test#5 - check that map filled dynamically
-        this.node.execute(async () => {
-            let map = await this.page.findAllBySelector('#map');
-            map.innerHTML = '';
-            await this.page.evaluate(async () => {
-                window.onload = function () {}
-            });
-            await this.page.refresh();
-            const cells = await this.page.findAllBySelector('tr');
+        //Test#5 - check clearMap function
+        this.page.execute(() => {
+            if (window.clearMap instanceof Function) {
+                window.clearMap();
+            } else {
+                return wrong(`Implement the window.clearMap() function, please.`)
+            }
 
-            return cells.length ?
-                wrong(`The map must have 5 rows in the table.`) :
-                correct()
+            this.cells = document.getElementsByClassName('cell');
+            return this.cells.length === 0 ?
+                correct() :
+                wrong(`Check your window.clearMap() function, now after it works, not all map cells are cleared.`)
+        }),
+        //Test#6 - check renderMap function
+        this.page.execute(() => {
+            if (window.renderMap instanceof Function) {
+                window.renderMap(3, 3);
+            } else {
+                return wrong(`Implement the window.renderMap() function, please.`)
+            }
+            this.cells = document.getElementsByClassName('cell');
+            return this.cells.length === 9 ?
+                correct() :
+                wrong(`Check your window.renderMap() function. When trying to draw a 3 by 3 map, it draws a map consisting of ${this.cells.length} cells.`)
         }),
     ]
 
 }
 
-jest.setTimeout(30000);
-test("Test stage", async () => {
-        await new FantasticBeingsTest().runTests()
+it("Test stage", async () => {
+        await new Test().runTests()
     }
-);
+).timeout(30000);

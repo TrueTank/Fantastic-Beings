@@ -2,30 +2,6 @@ body {
     margin: 0;
 }
 
-@keyframes being-clear {
-    from {
-        background-image: url("images/frame_0_delay-0.07s.png");
-    }
-    15% {
-        background-image: url("images/frame_1_delay-0.07s.png");
-    }
-    30% {
-        background-image: url("images/frame_2_delay-0.07s.png");
-    }
-    45% {
-        background-image: url("images/frame_3_delay-0.07s.png");
-    }
-    60% {
-        background-image: url("images/frame_4_delay-0.07s.png");
-    }
-    75% {
-        background-image: url("images/frame_5_delay-0.07s.png");
-    }
-    to {
-        background-image: url("images/frame_6_delay-0.07s.png");
-    }
-}
-
 #board {
     background: url("images/board-bg.png");
     background-size: cover;
@@ -70,8 +46,6 @@ body {
 
 .cell img {
     width: 100%;
-    overflow: hidden;
-    transition: 500ms;
 }
 
 .cell.selected {
@@ -80,25 +54,6 @@ body {
 
 .cell:hover {
     background-image: url('images/cell-hover-bg.png');
-}
-
-.cell:hover img {
-    transform: scale(1.1);
-}
-
-.cell.clear {
-    -webkit-animation-name: being-clear;
-    -moz-animation-name: being-clear;
-    -o-animation-name: being-clear;
-    animation-name: being-clear;
-    -webkit-animation-duration: 800ms;
-    -moz-animation-duration: 800ms;
-    -o-animation-duration: 800ms;
-    animation-duration: 800ms;
-}
-
-.cell.clear img {
-    display: none;
 }
 
 body {
