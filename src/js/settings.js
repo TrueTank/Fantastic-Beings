@@ -2,7 +2,7 @@ import salamander from '../images/salamander.png';
 import zouwu from '../images/zouwu.png';
 import swooping from '../images/swooping.png';
 import puffskein from '../images/puffskein.png';
-import kelpie from '../images/salamander.png';
+import kelpie from '../images/kelpie.png';
 export let settings = {
     rowsCount: 5,
     colsCount: 5,

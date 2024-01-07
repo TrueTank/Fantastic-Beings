@@ -38,15 +38,10 @@ export let game = {
                         game.soundClick.play();
                         game.changeBeings(target, game.selectedBeing);
                         game.map.resetCell(game.selectedBeing.dataset.coords);
-                        if (map.checkMatchesInMap()) {
-                            map.shiftBeings();
-                            map.renderBeings();
-                            while (map.checkMatchesInMap()) {
-                                map.shiftBeings();
-                                map.renderBeings();
-                            }
-                        } else {
+                        if (map.findMatchGroup() === -1) {
                             game.changeBeings(target, game.selectedBeing);
+                        } else {
+                            map.removeAllMatches();
                         }
                         game.selectedBeing = '';
                         settings.numberOfMoves--;

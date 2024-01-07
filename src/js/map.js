@@ -1,6 +1,8 @@
 import {settings} from "./settings.js";
 import {game} from "./index.js"
 
+const customDelay = delay => new Promise(resolve => setTimeout(resolve, delay));
+
 export let map = {
     cells: {},
     movesObj: null,
@@ -26,13 +28,18 @@ export let map = {
     renderBeings() {
         for (let cell in this.cells) {
             if(!this.cells[cell].dataset.being) {
-                let being = settings.beings[Math.floor(Math.random() * settings.beings.length)];
-                this.addBeingToCell(being, cell);
+                let counter = 5;
+                do {
+                    counter--;
+                    let being = settings.beings[Math.floor(Math.random() * settings.beings.length)];
+                    this.addBeingToCell(being, cell);
+                } while(this.findMatchGroup() !== -1 && counter > 0)
             }
         }
     },
     addBeingToCell(being, coords) {
-        let beingImg = document.createElement('img');
+        let beingImg = document.querySelector(`img[data-coords="${coords}"]`);
+        if (!beingImg) beingImg = document.createElement('img');
         beingImg.dataset.coords = coords;
         beingImg.src = settings.beingsImgs[being];
         this.cells[coords].appendChild(beingImg);
@@ -51,51 +58,40 @@ export let map = {
         cell.innerHTML = '';
         cell.dataset.being = '';
     },
-    checkMatchesInMap() {
-        let hor = this.checkAndDeleteLinesForMatch();
-        let vert = this.checkAndDeleteLinesForMatch(true);
-        return hor || vert;
-    },
-    //TODO Refactor!!!
-    checkAndDeleteLinesForMatch(isRows) {
-        let deleteFlag = false;
+    findMatchGroup() {
         let group = [];
         let that = this;
-
-        function dropGroup() {
-            if (group.length >= settings.minLength) {
-                that.deleteGroup(group);
-                deleteFlag = true;
-                return true;
-            }
-            return false;
-        }
-
-        for (let i = 0; i < settings.rowsCount; i++) {
-            let currentBeing = '';
-            group = [];
-            for (let j = 0; j < settings.colsCount; j++) {
-                let being = isRows ? this.cells[`x${j}_y${i}`] : this.cells[`x${i}_y${j}`];
-                if (currentBeing !== being.dataset.being) {
-                    if (!dropGroup()) {
-                        currentBeing = being.dataset.being;
+        function checkLines(isRows) {
+            for (let i = 0; i < settings.rowsCount; i++) {
+                let currentBeing = '';
+                group = [];
+                for (let j = 0; j < settings.colsCount; j++) {
+                    let being = isRows ? that.cells[`x${i}_y${j}`] : that.cells[`x${j}_y${i}`];
+                    if (currentBeing === being.dataset.being) {
                         if (being.dataset.being) {
-                            group = [being];
-                        } else {
-                            group = [];
+                            group.push(being);
                         }
-                    }
-                } else {
-                    if (being.dataset.being) {
-                        group.push(being);
+                    } else {
+                        if (group.length >= settings.minLength) {
+                            return;
+                        }
+                        currentBeing = being.dataset.being;
+                        group = [being];
                     }
                 }
-                if (j === settings.colsCount - 1) {
-                    dropGroup();
+                if (group.length >= settings.minLength) {
+                    return;
                 }
             }
+            group = [];
         }
-        return deleteFlag;
+        checkLines();
+        if (group.length > 0) {
+            return group;
+        } else {
+            checkLines(true);
+            return group.length > 0 ? group : -1
+        }
     },
     deleteGroup(group) {
         game.soundMatch.play();
@@ -117,20 +113,29 @@ export let map = {
         }
     },
     shiftBeings() {
-        for (let col = 0; col < settings.rowsCount; col++) {
+        for (let j = 0; j < settings.colsCount; j++) {
             let emptyIndex = -1;
-            for (let row = settings.colsCount - 1; row >= 0; row--) {
-                let cell = this.cells[`x${col}_y${row}`];
+            for (let i = settings.rowsCount - 1; i >= 0; i--) {
+                let cell = this.cells[`x${i}_y${j}`];
                 if (!cell.dataset.being && emptyIndex === -1) {
-                    emptyIndex = row;
+                    emptyIndex = i;
                 } else {
                     if (emptyIndex > -1 && cell.dataset.being) {
-                        this.addBeingToCell(cell.dataset.being, `x${col}_y${emptyIndex}`);
+                        this.addBeingToCell(cell.dataset.being, `x${emptyIndex}_y${j}`);
                         this.clearCell(cell);
                         emptyIndex--;
                     }
                 }
             }
+        }
+    },
+    removeAllMatches() {
+        let groupForDeletion = this.findMatchGroup();
+        while (groupForDeletion !== -1) {
+            this.deleteGroup(groupForDeletion);
+            this.shiftBeings();
+            this.renderBeings();
+            groupForDeletion = this.findMatchGroup();
         }
     },
     initStatusBar() {
