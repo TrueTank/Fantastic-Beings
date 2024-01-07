@@ -1,0 +1,164 @@
+body {
+    margin: 0;
+}
+
+@keyframes being-clear {
+    from {
+        background-image: url("images/frame_0_delay-0.07s.png");
+    }
+    15% {
+        background-image: url("images/frame_1_delay-0.07s.png");
+    }
+    30% {
+        background-image: url("images/frame_2_delay-0.07s.png");
+    }
+    45% {
+        background-image: url("images/frame_3_delay-0.07s.png");
+    }
+    60% {
+        background-image: url("images/frame_4_delay-0.07s.png");
+    }
+    75% {
+        background-image: url("images/frame_5_delay-0.07s.png");
+    }
+    to {
+        background-image: url("images/frame_6_delay-0.07s.png");
+    }
+}
+
+#board {
+    background: url("images/board-bg.png");
+    background-size: cover;
+    height: 100vh;
+}
+
+#status-bar {
+    height: 10vw;
+    background: url("images/state-panel-bg.png");
+    background-size: cover;
+}
+
+#game-footer {
+    height: 7vw;
+    background: url(images/game-footer.png);
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    background-size: inherit;
+    text-align: center;
+    color: white;
+    line-height: 7vw;
+    font-size: 3vw;
+    text-shadow: 1px 1px black;
+}
+
+#map {
+    margin-left:auto;
+    margin-right:auto;
+    margin-top: 3vh;
+    width: 60vh;
+    height: 60vh;
+}
+
+.cell {
+    border: solid 1px rgb(103, 101, 168);
+    background-color: rgba(103, 101, 168, 0.4);
+    padding: 1vh 1vw;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.cell img {
+    width: 100%;
+    overflow: hidden;
+    transition: 500ms;
+}
+
+.cell.selected {
+    background-image: url('images/cell-selected-bg.png');
+}
+
+.cell:hover {
+    background-image: url('images/cell-hover-bg.png');
+}
+
+.cell:hover img {
+    transform: scale(1.1);
+}
+
+.cell.clear {
+    -webkit-animation-name: being-clear;
+    -moz-animation-name: being-clear;
+    -o-animation-name: being-clear;
+    animation-name: being-clear;
+    -webkit-animation-duration: 800ms;
+    -moz-animation-duration: 800ms;
+    -o-animation-duration: 800ms;
+    animation-duration: 800ms;
+}
+
+.cell.clear img {
+    display: none;
+}
+
+body {
+    font-family: 'Marmelad', sans-serif;
+}
+
+#status-bar-container {
+    margin: auto;
+    width: 40vw;
+    height: 11vh;
+}
+
+#beings-for-win {
+    height: 11vh;
+    width: 16vw;
+    margin-left: 2vw;
+}
+
+#moves {
+    margin: auto;
+    width: 7vw;
+    text-align: center;
+    color: white;
+    font-size: 4vh;
+    padding-left: 1vw;
+    margin-top: -8vh;
+}
+
+#score {
+    margin-left: 27vw;
+    margin-top: -10vh;
+    color: white;
+    text-shadow: 1px 1px black;
+    font-size: 4.5vh;
+    font-weight: bold;
+}
+
+#moves-value {
+    display: block;
+}
+
+#beings-for-win span {
+    width: 4vw;
+    height: 4vw;
+    text-align: right;
+    display: inline-block;
+    background-repeat: no-repeat;
+    background-size: contain;
+    margin-right: 2vw;
+    margin-top: 2vh;
+    color: white;
+    text-shadow: 1px 1px black;
+    font-size: 3vh;
+    line-height: 12vh;
+}
+
+#beings-for-win .zouwu {
+    background-image: url('images/zouwu.png');
+}
+
+#beings-for-win .kelpie {
+    background-image: url('images/kelpie.png');
+}

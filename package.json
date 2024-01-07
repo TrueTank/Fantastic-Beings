@@ -1,11 +1,35 @@
 {
-  "devDependencies": {
-    "mocha": "^10.2.0",
-    "hs-test-web": "https://github.com/hyperskill/hs-test-web/archive/release.tar.gz",
-    "puppeteer": "^21.0.0"
-  },
+  "name": "fantastic-beings",
+  "version": "1.0.0",
+  "description": "Simple match-three game",
+  "main": "index.js",
   "scripts": {
-    "test": "mocha"
+    "test": "test_game",
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack serve"
   },
-  "type":"module"
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/TrueTank/Fantastic-Beings.git"
+  },
+  "author": "Tatyana Moskaleva",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/TrueTank/Fantastic-Beings/issues"
+  },
+  "homepage": "https://github.com/TrueTank/Fantastic-Beings#readme",
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "favicons": "^7.1.5",
+    "favicons-webpack-plugin": "^6.0.1",
+    "html-webpack-plugin": "^5.6.0",
+    "style-loader": "^3.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^4.15.1"
+  },
+  "dependencies": {
+    "file-loader": "^6.2.0",
+    "url-loader": "^4.1.1"
+  }
 }

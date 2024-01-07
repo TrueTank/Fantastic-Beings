@@ -1,0 +1,10 @@
+type: edu
+files:
+- name: test/test.js
+  visible: false
+- name: src/index.html
+  visible: true
+- name: task/task.js
+  visible: true
+- name: src/style.css
+  visible: true
