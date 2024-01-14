@@ -163,12 +163,12 @@ body {
     background-image: url('images/kelpie.png');
 }
 
-.loss #status-bar {
+.loss #status-bar, .win #status-bar{
     opacity: 0;
     transition: opacity 0.5s;
 }
 
-.loss #game-footer {
+.loss #game-footer, .win #game-footer {
     top: 0;
     height: 100%;
     line-height: 100vh;

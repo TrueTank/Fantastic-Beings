@@ -17,8 +17,9 @@ export let settings = {
     minLength: 3,
     numberOfMoves: 10,
     beingsForWin: {
-        'zouwu': 13,
-        'kelpie': 5
+        'zouwu': 12,
+        'kelpie': 6
     },
+    commonChanceSize: 10,
     score: 0,
 };

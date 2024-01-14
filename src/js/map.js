@@ -8,6 +8,7 @@ export let map = {
     movesObj: null,
     scoreObj: null,
     gameResultObj: null,
+    beingsList: [],
     renderMap() {
         let table = document.getElementById('map');
         table.innerHTML = '';
@@ -25,13 +26,26 @@ export let map = {
             }
         }
     },
+    getRandomBeing() {
+        if (this.beingsList.length === 0) {
+            this.beingsList = [].concat(settings.beings);
+            const dimension = Object.values(settings.beingsForWin).reduce((sum, value) => { return sum + value }, 0);
+            for (let being in settings.beingsForWin) {
+                const incChance = Math.round((settings.commonChanceSize - settings.beings.length) * settings.beingsForWin[being] / dimension);
+                for (let i = 0; i < incChance; i++) {
+                    this.beingsList.push(being);
+                }
+            }
+        }
+        return this.beingsList[Math.floor(Math.random() * this.beingsList.length)];
+    },
     renderBeings() {
         for (let cell in this.cells) {
             if(!this.cells[cell].dataset.being) {
                 let counter = 5;
                 do {
                     counter--;
-                    let being = settings.beings[Math.floor(Math.random() * settings.beings.length)];
+                    let being = this.getRandomBeing();
                     this.addBeingToCell(being, cell);
                 } while(this.findMatchGroup() !== -1 && counter > 0)
             }

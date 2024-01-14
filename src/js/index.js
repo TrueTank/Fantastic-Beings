@@ -32,9 +32,14 @@ export let game = {
         this.gameOver = true;
         document.querySelector('#board').classList.add('loss');
     },
+    handleWin() {
+        map.gameResultObj.innerHTML = 'You won! Reload the page to start the game again.';
+        game.gameOver = true;
+        document.querySelector('#board').classList.add('win');
+    },
     //TODO Refactor!!!
     mouseClickHandler(e) {
-        if(!this.gameOver) {
+        if(!game.gameOver) {
             let target = e.target;
             if (target.dataset.coords) {
                 if (game.selectedBeing) {
@@ -51,8 +56,7 @@ export let game = {
                         settings.numberOfMoves--;
                         map.updateStatusBar();
                         if (game.isWin()) {
-                            map.gameResultObj.innerHTML = 'You won! Reload the page to start the game again.';
-                            game.gameOver = true;
+                            game.handleWin();
                             return;
                         }
                         if(settings.numberOfMoves === 0) {
