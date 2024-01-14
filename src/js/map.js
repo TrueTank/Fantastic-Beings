@@ -129,6 +129,31 @@ export let map = {
             }
         }
     },
+    changeBeings(being1, being2) {
+        let tmp = being1.src;
+        let parent = being1.parentElement.dataset.being;
+        being1.src = being2.src;
+        being1.parentElement.dataset.being = being2.parentElement.dataset.being;
+        being2.src = tmp;
+        being2.parentElement.dataset.being = parent;
+    },
+    isAdjacentCell(cell1, cell2) {
+        if (cell1 && cell2) {
+            if (cell1[1] === cell2[1]) {
+                if (Math.abs(cell1[4] - cell2[4]) === 1) {
+                    return true;
+
+                }
+            } else {
+                if (cell1[4] === cell2[4]) {
+                    if (Math.abs(cell1[1] - cell2[1]) === 1) {
+                        return true;
+                    }
+                }
+            }
+        }
+        return false;
+    },
     removeAllMatches() {
         let groupForDeletion = this.findMatchGroup();
         while (groupForDeletion !== -1) {

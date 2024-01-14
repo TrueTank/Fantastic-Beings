@@ -7,14 +7,13 @@ import soundClick from "../sounds/click.wav"
 import soundMatch from "../sounds/match.wav"
 
 export let game = {
-    settings,
     map,
     selectedBeing: '',
     gameOver: false,
     soundClick: null,
     soundMatch: null,
     init() {
-        this.map.renderMap(this.settings.rowsCount, this.settings.colsCount);
+        this.map.renderMap(settings.rowsCount, settings.colsCount);
         this.map.renderBeings();
         this.map.initStatusBar();
         window.onclick = this.mouseClickHandler;
@@ -28,18 +27,23 @@ export let game = {
         }
         return counter <= 0;
     },
+    handleLoss() {
+        map.gameResultObj.innerHTML = 'You lost! Reload the page to start the game again.';
+        this.gameOver = true;
+        document.querySelector('#board').classList.add('loss');
+    },
     //TODO Refactor!!!
     mouseClickHandler(e) {
         if(!this.gameOver) {
             let target = e.target;
             if (target.dataset.coords) {
                 if (game.selectedBeing) {
-                    if (game.isAdjacentCell(game.selectedBeing.dataset.coords, target.dataset.coords)) {
+                    if (map.isAdjacentCell(game.selectedBeing.dataset.coords, target.dataset.coords)) {
                         game.soundClick.play();
-                        game.changeBeings(target, game.selectedBeing);
+                        map.changeBeings(target, game.selectedBeing);
                         game.map.resetCell(game.selectedBeing.dataset.coords);
                         if (map.findMatchGroup() === -1) {
-                            game.changeBeings(target, game.selectedBeing);
+                            map.changeBeings(target, game.selectedBeing);
                         } else {
                             map.removeAllMatches();
                         }
@@ -48,12 +52,11 @@ export let game = {
                         map.updateStatusBar();
                         if (game.isWin()) {
                             map.gameResultObj.innerHTML = 'You won! Reload the page to start the game again.';
-                            this.gameOver = true;
+                            game.gameOver = true;
                             return;
                         }
                         if(settings.numberOfMoves === 0) {
-                            map.gameResultObj.innerHTML = 'You lost! Reload the page to start the game again.';
-                            this.gameOver = true;
+                            game.handleLoss();
                         }
                     }
                 } else {
@@ -64,33 +67,6 @@ export let game = {
                 }
             }
         }
-    },
-    //TODO Refactor!!!
-    isAdjacentCell(cell1, cell2) {
-        if (cell1 && cell2) {
-            if (cell1[1] === cell2[1]) {
-                if (Math.abs(cell1[4] - cell2[4]) === 1) {
-                    return true;
-
-                }
-            } else {
-                if (cell1[4] === cell2[4]) {
-                    if (Math.abs(cell1[1] - cell2[1]) === 1) {
-                        return true;
-                    }
-                }
-            }
-        }
-        return false;
-    },
-    //TODO Refactor!!!
-    changeBeings(being1, being2) {
-        let tmp = being1.src;
-        let parent = being1.parentElement.dataset.being;
-        being1.src = being2.src;
-        being1.parentElement.dataset.being = being2.parentElement.dataset.being;
-        being2.src = tmp;
-        being2.parentElement.dataset.being = parent;
     }
 };
 

@@ -40,11 +40,11 @@ body {
 
 #game-footer {
     height: 7vw;
-    background: url(images/game-footer.png);
+    background: rgba(0, 0, 0, 0.3) url(images/game-footer-new.png) no-repeat;
+    background-size: contain;
     position: absolute;
     bottom: 0;
     width: 100%;
-    background-size: inherit;
     text-align: center;
     color: white;
     line-height: 7vw;
@@ -161,4 +161,18 @@ body {
 
 #beings-for-win .kelpie {
     background-image: url('images/kelpie.png');
+}
+
+.loss #status-bar {
+    opacity: 0;
+    transition: opacity 0.5s;
+}
+
+.loss #game-footer {
+    top: 0;
+    height: 100%;
+    line-height: 100vh;
+    background: rgba(0, 0, 0, 0.5) url(images/game-footer-new.png) no-repeat;
+    background-size: contain;
+    transition: line-height 2s;
 }
